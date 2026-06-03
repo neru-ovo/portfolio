@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📱 抖音电商用户消费行为分析 - 关艺贤数据分析作品集</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@2.1.0/dist/echarts-wordcloud.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Playfair+Display:wght@400;600;700&display=swap');
+        :root { --primary: #6C63FF; --primary-dark: #5A52D5; --primary-light: #8B83FF; --secondary: #FF6584; --accent: #43E97B; --bg-dark: #0F0E17; --bg-card: #1A1A2E; --text-primary: #FFFFFE; --text-secondary: #A7A9BE; --text-muted: #6B6D8A; --gradient-1: linear-gradient(135deg, #6C63FF 0%, #FF6584 100%); --shadow: 0 10px 40px rgba(0,0,0,0.3); --shadow-sm: 0 4px 15px rgba(0,0,0,0.2); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg-dark); color: var(--text-primary); overflow-x: hidden; }
+        .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(20px); background: rgba(15,14,23,0.8); border-bottom: 1px solid rgba(108,99,255,0.1); }
+        .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--text-primary); }
+        .report-page { padding-top: 80px; min-height: 100vh; }
+        .report-header { padding: 3rem 2rem; max-width: 1200px; margin: 0 auto; }
+        .report-back { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; margin-bottom: 1.5rem; transition: color 0.3s; cursor: pointer; background: none; border: none; }
+        .report-back:hover { color: var(--primary-light); }
+        .report-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .report-subtitle { color: var(--text-muted); font-size: 1rem; }
+        .report-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; padding: 0 2rem; max-width: 1200px; margin: 2rem auto; }
+        .metric-card { background: var(--bg-card); border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(108,99,255,0.1); text-align: center; }
+        .metric-value { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .metric-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem; }
+        .report-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 2rem; padding: 0 2rem; max-width: 1200px; margin: 2rem auto; }
+        .chart-card { background: var(--bg-card); border-radius: 20px; padding: 1.5rem; border: 1px solid rgba(108,99,255,0.1); }
+        .chart-card.full-width { grid-column: 1 / -1; }
+        .chart-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(108,99,255,0.1); }
+        .chart-container { width: 100%; height: 400px; }
+        .chart-container.tall { height: 500px; }
+        .report-insights { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+        .insight-item { background: var(--bg-card); border-radius: 16px; padding: 1.5rem; border-left: 4px solid var(--primary); margin-bottom: 1rem; display: flex; gap: 1rem; align-items: flex-start; }
+        .insight-num { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); min-width: 40px; }
+        .insight-text { color: var(--text-secondary); line-height: 1.7; font-size: 0.95rem; }
+        .footer { text-align: center; padding: 3rem 2rem; border-top: 1px solid rgba(108,99,255,0.1); color: var(--text-muted); font-size: 0.85rem; margin-top: 3rem; }
+        @media (max-width: 768px) { .report-charts{grid-template-columns:1fr} .report-title{font-size:1.8rem} }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-logo">G.Y.X</div>
+    <ul class="nav-links">
+        <li><a href="index.html">🏠 返回首页</a></li>
+    </ul>
+</nav>
+
+<script id="douyin-data" type="application/json">{"用户基本画像": {"年龄分布": {"18-25": 177, "26-35": 192, "36-45": 231, "46-55": 223, "56+": 177}, "性别分布": {"Male": 526, "Female": 474}, "地区分布": {"Suburban": 349, "Urban": 344, "Rural": 307}, "收入分布": {"<50k": 266, "50k-80k": 229, "80k-120k": 311, "120k+": 194}}, "消费行为分析": {"购买频次分布": {"0-2": 280, "3-5": 309, "6-8": 302, "9+": 109}, "平均订单金额分布": {"<50": 211, "50-100": 276, "100-150": 264, "150+": 249}, "总消费金额分布": {"<1000": 186, "1000-2500": 304, "2500-4000": 293, "4000+": 217}, "商品品类偏好TOP5": {"Apparel": 218, "Electronics": 209, "Books": 198, "Home & Kitchen": 189, "Health & Beauty": 186}}, "RFM分析": {"最近登录天数分布": {"1-7天": 205, "8-14天": 246, "15-21天": 251, "22-30天": 298}, "用户价值分层": {"低价值": 252, "中价值": 249, "高价值": 250, "超高价值": 249}, "四分位数": {"Q1": 1273.0, "Q2": 2543.0, "Q3": 3837.0}}, "网站行为分析": {"网站停留时间分布": {"<100": 182, "100-200": 160, "200-400": 324, "400+": 334}, "浏览页面数分布": {"<10": 193, "10-25": 329, "25-40": 300, "40+": 178}, "订阅通讯的用户占比": 50.7}, "相关性分析": {"年龄_vs_总消费": 0.0183, "收入_vs_总消费": -0.0845, "网站停留时间_vs_购买频次": -0.0282}, "关键指标": {"总用户数": 1000, "平均消费金额": 2552.96, "平均购买频次": 4.63, "平均网站停留时间": 297.36, "通讯订阅率": 50.7}}</script>
+
+<div class="report-page" id="report-douyin">
+    <div class="report-header">
+        <a href="index.html" class="report-back">◀ 返回作品集</a>
+        <h1 class="report-title">📱 抖音电商用户消费行为分析</h1>
+        <p class="report-subtitle">基于1000条用户数据，深度解析用户画像、消费行为与RFM价值分层</p>
+    </div>
+    
+    <div class="report-header">
+        <button class="report-back" href="index.html">◀ 返回作品集</button>
+        <h1 class="report-title">📱 抖音电商用户消费行为分析</h1>
+        <p class="report-subtitle">基于1000条用户数据，深度解析用户画像、消费行为与RFM价值分层</p>
+    </div>
+    <div class="report-metrics" id="r2-metrics">
+        <div class="metric-card" id="r2-kpi-users"></div>
+        <div class="metric-card" id="r2-kpi-avg-spend"></div>
+        <div class="metric-card" id="r2-kpi-avg-freq"></div>
+        <div class="metric-card" id="r2-kpi-sub-rate"></div>
+    </div>
+    <div class="report-charts">
+        <div class="chart-card"><div class="chart-title">👥 年龄分布</div><div class="chart-container" id="r2-chart-age"></div></div>
+        <div class="chart-card"><div class="chart-title">⚧ 性别分布</div><div class="chart-container" id="r2-chart-gender"></div></div>
+        <div class="chart-card"><div class="chart-title">📍 地区分布</div><div class="chart-container" id="r2-chart-region"></div></div>
+        <div class="chart-card"><div class="chart-title">💵 收入分布</div><div class="chart-container" id="r2-chart-income"></div></div>
+        <div class="chart-card"><div class="chart-title">🛒 购买频次分布</div><div class="chart-container" id="r2-chart-freq"></div></div>
+        <div class="chart-card"><div class="chart-title">💰 平均订单金额分布</div><div class="chart-container" id="r2-chart-avg-order"></div></div>
+        <div class="chart-card"><div class="chart-title">💳 总消费金额分布</div><div class="chart-container" id="r2-chart-total-spend"></div></div>
+        <div class="chart-card"><div class="chart-title">🏷️ 商品品类偏好TOP5</div><div class="chart-container" id="r2-chart-category"></div></div>
+        <div class="chart-card"><div class="chart-title">📅 最近登录天数分布</div><div class="chart-container" id="r2-chart-login"></div></div>
+        <div class="chart-card"><div class="chart-title">💎 用户价值分层</div><div class="chart-container" id="r2-chart-rfm"></div></div>
+        <div class="chart-card"><div class="chart-title">⏱️ 网站停留时间分布</div><div class="chart-container" id="r2-chart-stay"></div></div>
+        <div class="chart-card"><div class="chart-title">📄 浏览页面数分布</div><div class="chart-container" id="r2-chart-pages"></div></div>
+    </div>
+    <div class="report-insights" id="r2-insights"></div>
+</div>
+
+
+</div>
+
+<footer class="footer"><p>© 2026 关艺贤 | 数据分析师作品集 — 用数据洞察世界</p></footer>
+
+
+
+</body>
+</html>
