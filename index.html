@@ -196,7 +196,12 @@
         <h1 class="report-title">🏠 亚马逊家庭机器人 — 产品市场分析</h1>
         <p class="report-subtitle">基于357条产品数据，全面解析美国家庭机器人市场的竞争格局、价格分布与品牌态势</p>
     </div>
-    <div class="report-metrics" id="r1-product-metrics"></div>
+    <div class="report-metrics" id="r1-product-metrics">
+        <div class="metric-card" id="r1-card-total-products"></div>
+        <div class="metric-card" id="r1-card-avg-price"></div>
+        <div class="metric-card" id="r1-card-avg-rating"></div>
+        <div class="metric-card" id="r1-card-total-sales"></div>
+    </div>
     <div class="report-charts">
         <div class="chart-card"><div class="chart-title">💰 价格区间分布</div><div class="chart-container" id="r1-chart-price-dist"></div></div>
         <div class="chart-card"><div class="chart-title">⭐ 产品评分分布</div><div class="chart-container" id="r1-chart-rating-pie"></div></div>
@@ -216,7 +221,12 @@
         <h1 class="report-title">💬 亚马逊家庭机器人 — 用户评论洞察</h1>
         <p class="report-subtitle">基于647条用户评论，深度挖掘用户需求、情感倾向与核心关注话题</p>
     </div>
-    <div class="report-metrics" id="r1-comment-metrics"></div>
+    <div class="report-metrics" id="r1-comment-metrics">
+        <div class="metric-card" id="r1-card-total-comments"></div>
+        <div class="metric-card" id="r1-card-positive-pct"></div>
+        <div class="metric-card" id="r1-card-top-word"></div>
+        <div class="metric-card" id="r1-card-months"></div>
+    </div>
     <div class="report-charts">
         <div class="chart-card"><div class="chart-title">❤️ 评论情感分布</div><div class="chart-container" id="r1-chart-sentiment"></div></div>
         <div class="chart-card"><div class="chart-title">⭐ 评分分布</div><div class="chart-container" id="r1-chart-comment-rating"></div></div>
@@ -236,7 +246,12 @@
         <h1 class="report-title">📱 抖音电商用户消费行为分析</h1>
         <p class="report-subtitle">基于1000条用户数据，深度解析用户画像、消费行为与RFM价值分层</p>
     </div>
-    <div class="report-metrics" id="r2-metrics"></div>
+    <div class="report-metrics" id="r2-metrics">
+        <div class="metric-card" id="r2-kpi-users"></div>
+        <div class="metric-card" id="r2-kpi-avg-spend"></div>
+        <div class="metric-card" id="r2-kpi-avg-freq"></div>
+        <div class="metric-card" id="r2-kpi-sub-rate"></div>
+    </div>
     <div class="report-charts">
         <div class="chart-card"><div class="chart-title">👥 年龄分布</div><div class="chart-container" id="r2-chart-age"></div></div>
         <div class="chart-card"><div class="chart-title">⚧ 性别分布</div><div class="chart-container" id="r2-chart-gender"></div></div>
@@ -261,7 +276,12 @@
         <h1 class="report-title">🏕️ 亚马逊美国户外产品 — 选品分析</h1>
         <p class="report-subtitle">基于319条产品数据，分析市场趋势、竞品格局与选品策略</p>
     </div>
-    <div class="report-metrics" id="r3-product-metrics"></div>
+    <div class="report-metrics" id="r3-product-metrics">
+        <div class="metric-card" id="r3-card-total-products"></div>
+        <div class="metric-card" id="r3-card-avg-price"></div>
+        <div class="metric-card" id="r3-card-avg-rating"></div>
+        <div class="metric-card" id="r3-card-brand-count"></div>
+    </div>
     <div class="report-charts">
         <div class="chart-card"><div class="chart-title">💰 价格分布</div><div class="chart-container" id="r3-chart-price"></div></div>
         <div class="chart-card"><div class="chart-title">⭐ 评分分布</div><div class="chart-container" id="r3-chart-rating"></div></div>
@@ -280,7 +300,12 @@
         <h1 class="report-title">💬 亚马逊美国户外产品 — 评论分析</h1>
         <p class="report-subtitle">基于2477条用户评论，深度挖掘用户满意度与核心关注点</p>
     </div>
-    <div class="report-metrics" id="r3-comment-metrics"></div>
+    <div class="report-metrics" id="r3-comment-metrics">
+        <div class="metric-card" id="r3-card-total-reviews"></div>
+        <div class="metric-card" id="r3-card-positive-pct"></div>
+        <div class="metric-card" id="r3-card-avg-rating2"></div>
+        <div class="metric-card" id="r3-card-month-count"></div>
+    </div>
     <div class="report-charts">
         <div class="chart-card"><div class="chart-title">😊 评论情感分布</div><div class="chart-container" id="r3-chart-sentiment"></div></div>
         <div class="chart-card"><div class="chart-title">⭐ 评论星级分布</div><div class="chart-container" id="r3-chart-star"></div></div>
@@ -1006,50 +1031,24 @@ function initDouyinCharts() {
 
 
 // ==================== 作品3：亚马逊美国户外产品 ====================
-// ==================== 作品3：亚马逊美国户外产品选品分析 ====================
-// 数据加载
 const outdoorData = JSON.parse(document.getElementById('outdoor-data').textContent);
 const pa = outdoorData.product_analysis;
 const ra = outdoorData.review_analysis;
 const km = outdoorData.key_metrics;
 
-// ==================== 产品分析报表 ====================
 function initOutdoorProductCharts() {
-  // 指标卡片
   const totalProducts = Object.values(pa.price.distribution).reduce((a, b) => a + b, 0);
-  document.getElementById('report-outdoor-product').innerHTML = `
-    <div class="report-section">
-      <h2 class="section-title">产品分析报表</h2>
-      <div class="metrics-row">
-        <div class="metric-card"><div class="metric-value">${totalProducts}</div><div class="metric-label">产品总数</div></div>
-        <div class="metric-card"><div class="metric-value">$${pa.price.average.toFixed(2)}</div><div class="metric-label">平均价格</div></div>
-        <div class="metric-card"><div class="metric-value">${pa.rating.average.toFixed(1)}</div><div class="metric-label">平均评分</div></div>
-        <div class="metric-card"><div class="metric-value">${pa.brand.brand_count}</div><div class="metric-label">品牌数</div></div>
-      </div>
-      <div class="charts-grid cols-2">
-        <div class="chart-container"><div id="r3-chart-price" class="chart"></div></div>
-        <div class="chart-container"><div id="r3-chart-rating" class="chart"></div></div>
-        <div class="chart-container"><div id="r3-chart-price-top10" class="chart"></div></div>
-        <div class="chart-container"><div id="r3-chart-brand" class="chart"></div></div>
-        <div class="chart-container"><div id="r3-chart-sales" class="chart"></div></div>
-        <div class="chart-container"><div id="r3-chart-review-dist" class="chart"></div></div>
-      </div>
-      <div class="insights-card">
-        <h3>关键发现</h3>
-        <ul>
-          <li>价格高度集中于低价位：59.6%的产品定价在$0-30区间，平均价格仅$30.11，说明户外产品以平价走量为主</li>
-          <li>评分整体优秀：65.2%的产品评分在4.5-5.0区间，平均评分4.5分，用户满意度极高</li>
-          <li>头部品牌集中度高：Hydro Flask、STANLEY、Owala三大品牌占据头部，产品数与评分双高，品牌效应显著</li>
-        </ul>
-      </div>
-    </div>
-  `;
+  
+  // 指标卡片
+  document.getElementById('r3-card-total-products').innerHTML = '<div class="metric-value">' + totalProducts + '</div><div class="metric-label">产品总数</div>';
+  document.getElementById('r3-card-avg-price').innerHTML = '<div class="metric-value">$' + pa.price.average.toFixed(2) + '</div><div class="metric-label">平均价格</div>';
+  document.getElementById('r3-card-avg-rating').innerHTML = '<div class="metric-value">' + pa.rating.average.toFixed(1) + '</div><div class="metric-label">平均评分</div>';
+  document.getElementById('r3-card-brand-count').innerHTML = '<div class="metric-value">' + pa.brand.brand_count + '</div><div class="metric-label">品牌数</div>';
 
   // 价格分布柱状图
   const priceKeys = Object.keys(pa.price.distribution);
   const priceVals = Object.values(pa.price.distribution);
-  echarts.init(document.getElementById('r3-chart-price'), null, {renderer: 'svg'}).setOption(merge(chartTheme, {
-    title: { text: '价格分布', left: 'center', textStyle: { color: '#FEFEFE', fontSize: 16 } },
+  echarts.init(document.getElementById('r3-chart-price')).setOption(merge(chartTheme, {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
     xAxis: { type: 'category', data: priceKeys, axisLabel: { color: '#A7A9BE' }, axisLine: { lineStyle: { color: '#444' } } },
@@ -1060,8 +1059,7 @@ function initOutdoorProductCharts() {
   // 评分分布饼图
   const ratingKeys = Object.keys(pa.rating.distribution);
   const ratingVals = Object.values(pa.rating.distribution);
-  echarts.init(document.getElementById('r3-chart-rating'), null, {renderer: 'svg'}).setOption(merge(chartTheme, {
-    title: { text: '评分分布', left: 'center', textStyle: { color: '#FEFEFE', fontSize: 16 } },
+  echarts.init(document.getElementById('r3-chart-rating')).setOption(merge(chartTheme, {
     tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
     legend: { bottom: 0, textStyle: { color: '#A7A9BE' } },
     series: [{
@@ -1075,8 +1073,7 @@ function initOutdoorProductCharts() {
   // 价格TOP10横向柱状图
   const priceTopTitles = pa.price.top10.map(p => p.title.length > 40 ? p.title.substring(0, 40) + '...' : p.title);
   const priceTopPrices = pa.price.top10.map(p => p.price);
-  echarts.init(document.getElementById('r3-chart-price-top10'), null, {renderer: 'svg'}).setOption(merge(chartTheme, {
-    title: { text: '价格TOP10产品', left: 'center', textStyle: { color: '#FEFEFE', fontSize: 16 } },
+  echarts.init(document.getElementById('r3-chart-price-top10')).setOption(merge(chartTheme, {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     grid: { left: '3%', right: '8%', bottom: '3%', containLabel: true },
     xAxis: { type: 'value', axisLabel: { color: '#A7A9BE' }, splitLine: { lineStyle: { color: '#333' } } },
@@ -1084,12 +1081,11 @@ function initOutdoorProductCharts() {
     series: [{ data: priceTopPrices.reverse(), type: 'bar', itemStyle: { color: colors[1], borderRadius: [0, 4, 4, 0] }, barWidth: '60%' }]
   }));
 
-  // TOP10品牌分析（产品数柱状图+评分折线图）
+  // TOP10品牌分析
   const brandNames = pa.brand.top10.map(b => b.brand);
   const brandCounts = pa.brand.top10.map(b => b.product_count);
   const brandRatings = pa.brand.top10.map(b => b.avg_rating);
-  echarts.init(document.getElementById('r3-chart-brand'), null, {renderer: 'svg'}).setOption(merge(chartTheme, {
-    title: { text: 'TOP10品牌分析', left: 'center', textStyle: { color: '#FEFEFE', fontSize: 16 } },
+  echarts.init(document.getElementById('r3-chart-brand')).setOption(merge(chartTheme, {
     tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
     legend: { data: ['产品数', '平均评分'], bottom: 0, textStyle: { color: '#A7A9BE' } },
     grid: { left: '3%', right: '4%', bottom: '10%', containLabel: true },
@@ -1104,11 +1100,10 @@ function initOutdoorProductCharts() {
     ]
   }));
 
-  // 销量规模分布柱状图
+  // 销量规模分布
   const salesKeys = Object.keys(pa.sales_volume.distribution);
   const salesVals = Object.values(pa.sales_volume.distribution);
-  echarts.init(document.getElementById('r3-chart-sales'), null, {renderer: 'svg'}).setOption(merge(chartTheme, {
-    title: { text: '销量规模分布', left: 'center', textStyle: { color: '#FEFEFE', fontSize: 16 } },
+  echarts.init(document.getElementById('r3-chart-sales')).setOption(merge(chartTheme, {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
     xAxis: { type: 'category', data: salesKeys, axisLabel: { color: '#A7A9BE' }, axisLine: { lineStyle: { color: '#444' } } },
@@ -1116,53 +1111,41 @@ function initOutdoorProductCharts() {
     series: [{ data: salesVals, type: 'bar', itemStyle: { color: colors[3], borderRadius: [4, 4, 0, 0] }, barWidth: '50%' }]
   }));
 
-  // 评论数分布柱状图
+  // 评论数分布
   const reviewKeys = Object.keys(pa.review_count.distribution);
   const reviewVals = Object.values(pa.review_count.distribution);
-  echarts.init(document.getElementById('r3-chart-review-dist'), null, {renderer: 'svg'}).setOption(merge(chartTheme, {
-    title: { text: '评论数分布', left: 'center', textStyle: { color: '#FEFEFE', fontSize: 16 } },
+  echarts.init(document.getElementById('r3-chart-review-dist')).setOption(merge(chartTheme, {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
     xAxis: { type: 'category', data: reviewKeys, axisLabel: { color: '#A7A9BE' }, axisLine: { lineStyle: { color: '#444' } } },
     yAxis: { type: 'value', axisLabel: { color: '#A7A9BE' }, splitLine: { lineStyle: { color: '#333' } } },
     series: [{ data: reviewVals, type: 'bar', itemStyle: { color: colors[4], borderRadius: [4, 4, 0, 0] }, barWidth: '50%' }]
   }));
+
+  // 洞察卡片
+  const insights = [
+    '价格高度集中于低价位：59.6%的产品定价在$0-30区间，平均价格仅$30.11，说明户外产品以平价走量为主',
+    '评分整体优秀：65.2%的产品评分在4.5-5.0区间，平均评分4.5分，用户满意度极高',
+    '头部品牌集中度高：Hydro Flask、STANLEY、Owala三大品牌占据头部，产品数与评分双高，品牌效应显著'
+  ];
+  const insightHtml = insights.map(function(t, idx) {
+    return '<div class="insight-item"><span class="insight-num">0' + (idx+1) + '</span><span class="insight-text">' + t + '</span></div>';
+  }).join('');
+  document.getElementById('r3-product-insights').innerHTML = insightHtml;
 }
 
-// ==================== 评论分析报表 ====================
 function initOutdoorCommentCharts() {
   const totalReviews = Object.values(ra.sentiment.star_distribution).reduce((a, b) => a + b, 0);
   const monthCount = Object.keys(ra.time.month_distribution).length;
-  document.getElementById('report-outdoor-comment').innerHTML = `
-    <div class="report-section">
-      <h2 class="section-title">评论分析报表</h2>
-      <div class="metrics-row">
-        <div class="metric-card"><div class="metric-value">${totalReviews}</div><div class="metric-label">评论总数</div></div>
-        <div class="metric-card"><div class="metric-value">${(ra.sentiment.positive_ratio * 100).toFixed(1)}%</div><div class="metric-label">正面评价占比</div></div>
-        <div class="metric-card"><div class="metric-value">${km.average_rating.toFixed(1)}</div><div class="metric-label">平均评分</div></div>
-        <div class="metric-card"><div class="metric-value">${monthCount}</div><div class="metric-label">覆盖月份数</div></div>
-      </div>
-      <div class="charts-grid cols-2">
-        <div class="chart-container"><div id="r3-chart-sentiment" class="chart"></div></div>
-        <div class="chart-container"><div id="r3-chart-star" class="chart"></div></div>
-        <div class="chart-container full-width"><div id="r3-chart-month" class="chart"></div></div>
-        <div class="chart-container"><div id="r3-chart-title-word" class="chart"></div></div>
-        <div class="chart-container"><div id="r3-chart-content-word" class="chart"></div></div>
-      </div>
-      <div class="insights-card">
-        <h3>关键发现</h3>
-        <ul>
-          <li>评论情感极度正面：正面评价占比高达92.2%，负面评价仅3.4%，产品口碑极佳</li>
-          <li>五星评论主导：73.9%的评论给出5星评分，4星及以上占比高达92.2%，用户认可度极高</li>
-          <li>评论热度持续攀升：2025年4月评论数达674条达到峰值，近半年评论量呈爆发式增长，市场关注度持续走高</li>
-        </ul>
-      </div>
-    </div>
-  `;
+  
+  // 指标卡片
+  document.getElementById('r3-card-total-reviews').innerHTML = '<div class="metric-value">' + totalReviews + '</div><div class="metric-label">评论总数</div>';
+  document.getElementById('r3-card-positive-pct').innerHTML = '<div class="metric-value">' + (ra.sentiment.positive_ratio * 100).toFixed(1) + '%</div><div class="metric-label">正面评价占比</div>';
+  document.getElementById('r3-card-avg-rating2').innerHTML = '<div class="metric-value">' + km.average_rating.toFixed(1) + '</div><div class="metric-label">平均评分</div>';
+  document.getElementById('r3-card-month-count').innerHTML = '<div class="metric-value">' + monthCount + '</div><div class="metric-label">覆盖月份数</div>';
 
   // 评论情感分布饼图
-  echarts.init(document.getElementById('r3-chart-sentiment'), null, {renderer: 'svg'}).setOption(merge(chartTheme, {
-    title: { text: '评论情感分布', left: 'center', textStyle: { color: '#FEFEFE', fontSize: 16 } },
+  echarts.init(document.getElementById('r3-chart-sentiment')).setOption(merge(chartTheme, {
     tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
     legend: { bottom: 0, textStyle: { color: '#A7A9BE' } },
     series: [{
@@ -1180,20 +1163,18 @@ function initOutdoorCommentCharts() {
   // 评论星级分布柱状图
   const starKeys = Object.keys(ra.sentiment.star_distribution);
   const starVals = Object.values(ra.sentiment.star_distribution);
-  echarts.init(document.getElementById('r3-chart-star'), null, {renderer: 'svg'}).setOption(merge(chartTheme, {
-    title: { text: '评论星级分布', left: 'center', textStyle: { color: '#FEFEFE', fontSize: 16 } },
+  echarts.init(document.getElementById('r3-chart-star')).setOption(merge(chartTheme, {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-    xAxis: { type: 'category', data: starKeys.map(k => k + '星'), axisLabel: { color: '#A7A9BE' }, axisLine: { lineStyle: { color: '#444' } } },
+    xAxis: { type: 'category', data: starKeys.map(function(k) { return k + '星'; }), axisLabel: { color: '#A7A9BE' }, axisLine: { lineStyle: { color: '#444' } } },
     yAxis: { type: 'value', axisLabel: { color: '#A7A9BE' }, splitLine: { lineStyle: { color: '#333' } } },
     series: [{ data: starVals, type: 'bar', itemStyle: { color: colors[5], borderRadius: [4, 4, 0, 0] }, barWidth: '50%' }]
   }));
 
-  // 评论月度趋势折线图（带面积）
+  // 评论月度趋势折线图
   const monthKeys = Object.keys(ra.time.month_distribution);
   const monthVals = Object.values(ra.time.month_distribution);
-  echarts.init(document.getElementById('r3-chart-month'), null, {renderer: 'svg'}).setOption(merge(chartTheme, {
-    title: { text: '评论月度趋势', left: 'center', textStyle: { color: '#FEFEFE', fontSize: 16 } },
+  echarts.init(document.getElementById('r3-chart-month')).setOption(merge(chartTheme, {
     tooltip: { trigger: 'axis' },
     grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
     xAxis: { type: 'category', data: monthKeys, axisLabel: { color: '#A7A9BE' }, axisLine: { lineStyle: { color: '#444' } } },
@@ -1207,18 +1188,17 @@ function initOutdoorCommentCharts() {
     }]
   }));
 
-  // 评论标题高频词词云TOP20（使用散点图模拟词云效果）
+  // 评论标题高频词词云TOP20
   const titleWords = ra.word_frequency.title_top20;
   const maxTitleCount = titleWords[0].count;
-  echarts.init(document.getElementById('r3-chart-title-word'), null, {renderer: 'svg'}).setOption(merge(chartTheme, {
-    title: { text: '评论标题高频词TOP20', left: 'center', textStyle: { color: '#FEFEFE', fontSize: 16 } },
+  echarts.init(document.getElementById('r3-chart-title-word')).setOption(merge(chartTheme, {
     tooltip: { formatter: function(p) { return p.data[2] + ': ' + p.data[3]; } },
     grid: { left: '3%', right: '4%', bottom: '3%', top: '15%', containLabel: true },
     xAxis: { type: 'value', show: false },
     yAxis: { type: 'value', show: false },
     series: [{
       type: 'scatter',
-      data: titleWords.map((w, i) => {
+      data: titleWords.map(function(w, i) {
         const row = Math.floor(i / 5);
         const col = i % 5;
         return [col + 0.5, 3 - row + 0.5, w.word, w.count, w.count / maxTitleCount];
@@ -1231,14 +1211,24 @@ function initOutdoorCommentCharts() {
 
   // 评论内容高频词TOP15柱状图
   const contentWords = ra.word_frequency.content_top30.slice(0, 15);
-  echarts.init(document.getElementById('r3-chart-content-word'), null, {renderer: 'svg'}).setOption(merge(chartTheme, {
-    title: { text: '评论内容高频词TOP15', left: 'center', textStyle: { color: '#FEFEFE', fontSize: 16 } },
+  echarts.init(document.getElementById('r3-chart-content-word')).setOption(merge(chartTheme, {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     grid: { left: '3%', right: '8%', bottom: '3%', containLabel: true },
     xAxis: { type: 'value', axisLabel: { color: '#A7A9BE' }, splitLine: { lineStyle: { color: '#333' } } },
-    yAxis: { type: 'category', data: contentWords.map(w => w.word).reverse(), axisLabel: { color: '#A7A9BE' }, axisLine: { lineStyle: { color: '#444' } } },
-    series: [{ data: contentWords.map(w => w.count).reverse(), type: 'bar', itemStyle: { color: colors[6], borderRadius: [0, 4, 4, 0] }, barWidth: '60%' }]
+    yAxis: { type: 'category', data: contentWords.map(function(w) { return w.word; }).reverse(), axisLabel: { color: '#A7A9BE' }, axisLine: { lineStyle: { color: '#444' } } },
+    series: [{ data: contentWords.map(function(w) { return w.count; }).reverse(), type: 'bar', itemStyle: { color: colors[6], borderRadius: [0, 4, 4, 0] }, barWidth: '60%' }]
   }));
+
+  // 洞察卡片
+  const insights2 = [
+    '评论情感极度正面：正面评价占比高达92.2%，负面评价仅3.4%，产品口碑极佳',
+    '五星评论主导：73.9%的评论给出5星评分，4星及以上占比高达92.2%，用户认可度极高',
+    '评论热度持续攀升：2025年4月评论数达674条达到峰值，近半年评论量呈爆发式增长，市场关注度持续走高'
+  ];
+  const insightHtml2 = insights2.map(function(t, idx2) {
+    return '<div class="insight-item"><span class="insight-num">0' + (idx2+1) + '</span><span class="insight-text">' + t + '</span></div>';
+  }).join('');
+  document.getElementById('r3-comment-insights').innerHTML = insightHtml2;
 }
 
 
