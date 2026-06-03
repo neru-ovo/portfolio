@@ -70,14 +70,19 @@
         .portfolio-card:hover { border-color: var(--primary); transform: translateY(-8px); box-shadow: var(--shadow); }
         .portfolio-cover { height: 200px; position: relative; overflow: hidden; }
         .portfolio-cover-bg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
-        .portfolio-cover-bg.report1 { background: linear-gradient(135deg, #6C63FF 0%, #3B34A0 100%); }
-        .portfolio-cover-bg.report2 { background: linear-gradient(135deg, #FF6584 0%, #C94060 100%); }
-        .portfolio-cover-bg.placeholder { background: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%); }
-        .portfolio-cover-bg.placeholder2 { background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%); }
+        .portfolio-cover-bg.report1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; }
+        .portfolio-cover-bg.report1::after { content: "📊"; position: absolute; font-size: 4rem; opacity: 0.3; }
+        .portfolio-cover-bg.report2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); position: relative; }
+        .portfolio-cover-bg.report2::after { content: "💬"; position: absolute; font-size: 4rem; opacity: 0.3; }
+        .portfolio-cover-bg.placeholder { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); position: relative; }
+        .portfolio-cover-bg.placeholder::after { content: "📱"; position: absolute; font-size: 4rem; opacity: 0.3; }
+        .portfolio-cover-bg.placeholder2 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); position: relative; }
+        .portfolio-cover-bg.placeholder2::after { content: "🏕️"; position: absolute; font-size: 4rem; opacity: 0.3; }
         .portfolio-badge { position: absolute; top: 1rem; right: 1rem; padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.75rem; font-weight: 500; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: white; }
         .portfolio-info { padding: 1.5rem; }
-        .portfolio-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .portfolio-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; }
+        .portfolio-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary); }
+        .portfolio-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem; }
+        a.portfolio-card { text-decoration: none; }
         .portfolio-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
         .portfolio-tag { padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; background: rgba(108,99,255,0.15); color: var(--primary-light); }
         .report-page { display: none; padding-top: 80px; min-height: 100vh; }
