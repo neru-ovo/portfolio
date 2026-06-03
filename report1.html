@@ -243,7 +243,7 @@ function initCharts(){
     
     var sData = mainData.map(function(d){return{
         value:[d.price,d.rating,d.sales],
-        name: d.title,
+        name: d.title || ('$'+d.price),
         symbolSize: Math.max(4, Math.min(Math.sqrt(d.sales)*0.5, 35))
     }});
     
@@ -307,8 +307,9 @@ function initCharts(){
         var extremeHtml = '<div style="margin-top:12px;padding:10px;background:rgba(255,101,132,0.08);border-radius:8px;border-left:3px solid #FF6584;">';
         extremeHtml += '<div style="color:#FF6584;font-size:12px;font-weight:600;margin-bottom:6px;">⚠️ 高价产品 (>$500): ' + extremeData.length + '个</div>';
         extremeData.forEach(function(d) {
+            var t = d.title || ('产品 $'+d.price);
             extremeHtml += '<div style="color:#A7A9BE;font-size:11px;margin:3px 0;line-height:1.4;">• ' + 
-                          d.title.substring(0,35) + (d.title.length>35?'...':'') + 
+                          t.substring(0,35) + (t.length>35?'...':'') + 
                           ' <span style="color:#FF6584;">$' + d.price.toFixed(0) + '</span> / ' + d.rating + '星</div>';
         });
         extremeHtml += '</div>';
