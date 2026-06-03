@@ -184,7 +184,7 @@ function initCharts(){
     var starVals = Object.values(starDist);
     window._charts['star-dist'] = echarts.init(document.getElementById('chart-star-dist'));
     window._charts['star-dist'].setOption({
-        color:colors,tooltip:tooltip,
+        color:['#FA709A'],tooltip:tooltip,
         grid:{left:50,right:20,top:20,bottom:40},
         xAxis:{type:'category',data:starKeys,axisLabel:{color:'#A7A9BE',fontSize:11},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
         yAxis:{type:'value',axisLabel:{color:'#A7A9BE',fontSize:11},splitLine:{lineStyle:{color:'rgba(107,109,138,0.25)'}},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
@@ -245,7 +245,7 @@ function initCharts(){
     var cwCounts = contentWords.map(function(w){return w.count}).reverse();
     window._charts['content-words'] = echarts.init(document.getElementById('chart-content-words'));
     window._charts['content-words'].setOption({
-        color:colors,tooltip:tooltip,
+        color:['#38F9D7'],tooltip:tooltip,
         grid:{left:80,right:30,top:10,bottom:20},
         xAxis:{type:'value',axisLabel:{color:'#A7A9BE',fontSize:11},splitLine:{lineStyle:{color:'rgba(107,109,138,0.25)'}},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
         yAxis:{type:'category',data:cwNames,axisLabel:{color:'#A7A9BE',fontSize:11},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},

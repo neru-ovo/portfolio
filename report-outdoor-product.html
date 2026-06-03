@@ -173,7 +173,7 @@ function initCharts(){
     var pVals = Object.values(priceDist);
     window._charts['price-dist'] = echarts.init(document.getElementById('chart-price-dist'));
     window._charts['price-dist'].setOption({
-        color:colors,tooltip:tooltip,
+        color:['#43E97B'],tooltip:tooltip,
         grid:{left:60,right:20,top:20,bottom:40},
         xAxis:{type:'category',data:pKeys,axisLabel:{color:'#A7A9BE',fontSize:11},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
         yAxis:{type:'value',axisLabel:{color:'#A7A9BE',fontSize:11},splitLine:{lineStyle:{color:'rgba(107,109,138,0.25)'}},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
@@ -196,7 +196,7 @@ function initCharts(){
     var t10p = top10.map(function(x){return x.price}).reverse();
     window._charts['price-top10'] = echarts.init(document.getElementById('chart-price-top10'));
     window._charts['price-top10'].setOption({
-        color:colors,tooltip:tooltip,
+        color:['#FEE140'],tooltip:tooltip,
         grid:{left:300,right:40,top:10,bottom:30},
         xAxis:{type:'value',axisLabel:{color:'#A7A9BE',fontSize:11,formatter:'${value}'},splitLine:{lineStyle:{color:'rgba(107,109,138,0.25)'}},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
         yAxis:{type:'category',data:t10n,axisLabel:{color:'#A7A9BE',fontSize:11,width:280,overflow:'truncate'},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
@@ -227,7 +227,7 @@ function initCharts(){
     var svV = Object.values(sv);
     window._charts['sales-vol'] = echarts.init(document.getElementById('chart-sales-vol'));
     window._charts['sales-vol'].setOption({
-        color:colors,tooltip:tooltip,
+        color:['#FF6584'],tooltip:tooltip,
         grid:{left:60,right:20,top:20,bottom:40},
         xAxis:{type:'category',data:svK,axisLabel:{color:'#A7A9BE',fontSize:11},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
         yAxis:{type:'value',axisLabel:{color:'#A7A9BE',fontSize:11},splitLine:{lineStyle:{color:'rgba(107,109,138,0.25)'}},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
@@ -240,7 +240,7 @@ function initCharts(){
     var rcV = Object.values(rc);
     window._charts['review-count'] = echarts.init(document.getElementById('chart-review-count'));
     window._charts['review-count'].setOption({
-        color:colors,tooltip:tooltip,
+        color:['#4facfe'],tooltip:tooltip,
         grid:{left:60,right:20,top:20,bottom:40},
         xAxis:{type:'category',data:rcK,axisLabel:{color:'#A7A9BE',fontSize:11},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
         yAxis:{type:'value',axisLabel:{color:'#A7A9BE',fontSize:11},splitLine:{lineStyle:{color:'rgba(107,109,138,0.25)'}},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},

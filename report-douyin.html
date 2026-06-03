@@ -203,12 +203,12 @@ function initCharts(){
         });
     }
 
-    function makeBar(id, data){
+    function makeBar(id, data, barColor){
         var keys = Object.keys(data);
         var vals = Object.values(data);
         window._charts[id] = echarts.init(document.getElementById('chart-'+id));
         window._charts[id].setOption({
-            color:colors,tooltip:tooltip,
+            color: barColor || colors, tooltip:tooltip,
             grid:{left:60,right:20,top:20,bottom:40},
             xAxis:{type:'category',data:keys,axisLabel:{color:'#A7A9BE',fontSize:11},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
             yAxis:{type:'value',axisLabel:{color:'#A7A9BE',fontSize:11},splitLine:{lineStyle:{color:'rgba(107,109,138,0.25)'}},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
@@ -216,12 +216,12 @@ function initCharts(){
         });
     }
 
-    function makeHBar(id, data){
+    function makeHBar(id, data, barColor){
         var keys = Object.keys(data).reverse();
         var vals = Object.values(data).reverse();
         window._charts[id] = echarts.init(document.getElementById('chart-'+id));
         window._charts[id].setOption({
-            color:colors,tooltip:tooltip,
+            color: barColor || colors, tooltip:tooltip,
             grid:{left:100,right:30,top:10,bottom:20},
             xAxis:{type:'value',axisLabel:{color:'#A7A9BE',fontSize:11},splitLine:{lineStyle:{color:'rgba(107,109,138,0.25)'}},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
             yAxis:{type:'category',data:keys,axisLabel:{color:'#A7A9BE',fontSize:11},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
@@ -232,22 +232,22 @@ function initCharts(){
     // User Profile
     makePie('age', dd['用户基本画像']['年龄分布']);
     makePie('gender', dd['用户基本画像']['性别分布'], ['#6C63FF','#FF6584']);
-    makeBar('region', dd['用户基本画像']['地区分布']);
-    makeBar('income', dd['用户基本画像']['收入分布']);
+    makeBar('region', dd['用户基本画像']['地区分布'], ['#43E97B']);
+    makeBar('income', dd['用户基本画像']['收入分布'], ['#FA709A']);
 
     // Consumption
-    makeBar('freq', dd['消费行为分析']['购买频次分布']);
-    makeBar('avg-order', dd['消费行为分析']['平均订单金额分布']);
-    makeBar('total-spend', dd['消费行为分析']['总消费金额分布']);
-    makeHBar('category', dd['消费行为分析']['商品品类偏好TOP5']);
+    makeBar('freq', dd['消费行为分析']['购买频次分布'], ['#4facfe']);
+    makeBar('avg-order', dd['消费行为分析']['平均订单金额分布'], ['#FEE140']);
+    makeBar('total-spend', dd['消费行为分析']['总消费金额分布'], ['#38F9D7']);
+    makeHBar('category', dd['消费行为分析']['商品品类偏好TOP5'], ['#a18cd1']);
 
     // RFM
-    makeBar('login', dd['RFM分析']['最近登录天数分布']);
+    makeBar('login', dd['RFM分析']['最近登录天数分布'], ['#fbc2eb']);
     makePie('value', dd['RFM分析']['用户价值分层']);
 
     // Website
-    makeBar('stay', dd['网站行为分析']['网站停留时间分布']);
-    makeBar('pages', dd['网站行为分析']['浏览页面数分布']);
+    makeBar('stay', dd['网站行为分析']['网站停留时间分布'], ['#00f2fe']);
+    makeBar('pages', dd['网站行为分析']['浏览页面数分布'], ['#FF6584']);
 }
 document.addEventListener('DOMContentLoaded', initCharts);
 
