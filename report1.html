@@ -304,15 +304,17 @@ function initCharts(){
     
     // 显示极端价格产品列表
     if(extremeData.length > 0) {
-        var extremeHtml = '<div style="margin-top:12px;padding:10px;background:rgba(255,101,132,0.08);border-radius:8px;border-left:3px solid #FF6584;">';
-        extremeHtml += '<div style="color:#FF6584;font-size:12px;font-weight:600;margin-bottom:6px;">⚠️ 高价产品 (>$500): ' + extremeData.length + '个</div>';
+        var extremeHtml = '<div style="margin-top:12px;padding:12px;background:rgba(67,233,123,0.08);border-radius:8px;border-left:3px solid #43E97B;">';
+        extremeHtml += '<div style="color:#43E97B;font-size:13px;font-weight:600;margin-bottom:8px;">💎 高价产品 (>$500): ' + extremeData.length + '个</div>';
+        extremeHtml += '<div style="display:flex;flex-wrap:wrap;gap:6px;">';
         extremeData.forEach(function(d) {
             var t = d.title || ('产品 $'+d.price);
-            extremeHtml += '<div style="color:#A7A9BE;font-size:11px;margin:3px 0;line-height:1.4;">• ' + 
-                          t.substring(0,35) + (t.length>35?'...':'') + 
-                          ' <span style="color:#FF6584;">$' + d.price.toFixed(0) + '</span> / ' + d.rating + '星</div>';
+            var ratingStr = typeof d.rating === 'number' ? d.rating.toFixed(1) : d.rating;
+            extremeHtml += '<span style="color:#A7A9BE;font-size:12px;padding:4px 10px;background:rgba(107,109,138,0.15);border-radius:6px;border:1px solid rgba(107,109,138,0.2);white-space:nowrap;">' + 
+                          t.substring(0,20) + (t.length>20?'...':'') + 
+                          ' <span style="color:#43E97B;font-weight:500;">$' + d.price.toFixed(0) + '</span> / ' + ratingStr + '星</span>';
         });
-        extremeHtml += '</div>';
+        extremeHtml += '</div></div>';
         document.getElementById('chart-scatter').insertAdjacentHTML('afterend', extremeHtml);
     }
 
