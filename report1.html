@@ -107,12 +107,12 @@ body {
 </head>
 <body>
 <nav class="navbar">
-    <span class="logo">DataViz</span>
+    <span class="logo">G.Y.X</span>
     <a href="index.html">返回首页</a>
 </nav>
 <div class="main">
 
-<div style="margin-bottom: 1rem;"><a href="index.html#portfolio" style="color: #A7A9BE; text-decoration: none; font-size: 0.9rem;">返回作品集</a></div>
+<div style="margin-bottom: 1rem;"><a href="index.html#portfolio" style="color: #A7A9BE; text-decoration: none; font-size: 0.9rem;">◀ 返回作品集</a></div>
 
 <h1 class="page-title">家庭机器人产品分析</h1>
 <p class="page-subtitle">基于 Amazon 家庭机器人品类的产品数据，涵盖价格、评分、品牌、销量等多维度分析</p>
@@ -239,30 +239,85 @@ yAxis:{type:'value',axisLabel:{color:'#A7A9BE',fontSize:11},splitLine:{lineStyle
         series:[{type:'bar',data:t10vals,barWidth:'55%',itemStyle:{borderRadius:[0,6,6,0]}}]
     });
 
-    // 4. Scatter (bubble)
+    // 4. Scatter (bubble) - 优化版本
     var scatter = pd.price_rating_scatter;
-    var sData = scatter.map(function(d){return{
+    // 分离极端价格数据(>$500)
+    var mainData = scatter.filter(function(d){ return d.price <= 500; });
+    var extremeData = scatter.filter(function(d){ return d.price > 500; });
+    
+    var sData = mainData.map(function(d){return{
         value:[d.price,d.rating,d.sales],
-        symbolSize: Math.max(4, Math.min(Math.sqrt(d.sales)*0.5, 40))
+        name: d.title,
+        symbolSize: Math.max(4, Math.min(Math.sqrt(d.sales)*0.5, 35))
     }});
+    
     window._charts['scatter'] = echarts.init(document.getElementById('chart-scatter'));
     window._charts['scatter'].setOption({
         color:['#6C63FF'],
+        title: { 
+            text: '价格≤$500产品分布 (共' + mainData.length + '个)', 
+            left: 'center', 
+            top: 5,
+            textStyle: { color: '#A7A9BE', fontSize: 12 }
+        },
         tooltip:{
-    trigger:'item',
-    backgroundColor:'rgba(26,26,46,0.95)',
-    borderColor:'#6C63FF',
-    borderWidth:1,
-    textStyle:{color:'#FFFFFE',fontSize:13}
-},
-        grid:{left:60,right:40,top:20,bottom:50},
-        xAxis:{type:'value',name:'价格($)',nameTextStyle:{color:'#A7A9BE'},axisLabel:{color:'#A7A9BE',fontSize:11},splitLine:{lineStyle:{color:'rgba(107,109,138,0.25)'}},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
-        yAxis:{type:'value',name:'评分',nameTextStyle:{color:'#A7A9BE'},min:1,max:5.5,axisLabel:{color:'#A7A9BE',fontSize:11},splitLine:{lineStyle:{color:'rgba(107,109,138,0.25)'}},axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}},
-        series:[{type:'scatter',data:sData,
+            trigger:'item',
+            backgroundColor:'rgba(26,26,46,0.95)',
+            borderColor:'#6C63FF',
+            borderWidth:1,
+            textStyle:{color:'#FFFFFE',fontSize:13},
+            formatter: function(p) {
+                return p.data.name.substring(0,30) + '...<br/>' +
+                       '价格: $' + p.data.value[0].toFixed(2) + '<br/>' +
+                       '评分: ' + p.data.value[1] + '<br/>' +
+                       '销量: ' + Math.round(p.data.value[2]);
+            }
+        },
+        grid:{left:70,right:40,top:45,bottom:60},
+        xAxis:{
+            type:'value',
+            name:'价格 (USD)',
+            nameLocation:'middle',
+            nameGap:30,
+            min:0,
+            max:500,
+            nameTextStyle:{color:'#A7A9BE',fontSize:12},
+            axisLabel:{color:'#A7A9BE',fontSize:11,formatter:'${value}'},
+            splitLine:{lineStyle:{color:'rgba(107,109,138,0.25)'}},
+            axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}
+        },
+        yAxis:{
+            type:'value',
+            name:'评分',
+            nameLocation:'middle',
+            nameGap:35,
+            min:3,
+            max:5.2,
+            nameTextStyle:{color:'#A7A9BE',fontSize:12},
+            axisLabel:{color:'#A7A9BE',fontSize:11},
+            splitLine:{lineStyle:{color:'rgba(107,109,138,0.25)'}},
+            axisLine:{lineStyle:{color:'rgba(107,109,138,0.3)'}}
+        },
+        series:[{
+            type:'scatter',
+            data:sData,
             emphasis:{focus:'self'},
             itemStyle:{opacity:0.7,shadowBlur:10,shadowColor:'rgba(108,99,255,0.4)'}
         }]
     });
+    
+    // 显示极端价格产品列表
+    if(extremeData.length > 0) {
+        var extremeHtml = '<div style="margin-top:12px;padding:10px;background:rgba(255,101,132,0.08);border-radius:8px;border-left:3px solid #FF6584;">';
+        extremeHtml += '<div style="color:#FF6584;font-size:12px;font-weight:600;margin-bottom:6px;">⚠️ 高价产品 (>$500): ' + extremeData.length + '个</div>';
+        extremeData.forEach(function(d) {
+            extremeHtml += '<div style="color:#A7A9BE;font-size:11px;margin:3px 0;line-height:1.4;">• ' + 
+                          d.title.substring(0,35) + (d.title.length>35?'...':'') + 
+                          ' <span style="color:#FF6584;">$' + d.price.toFixed(0) + '</span> / ' + d.rating + '星</div>';
+        });
+        extremeHtml += '</div>';
+        document.getElementById('chart-scatter').insertAdjacentHTML('afterend', extremeHtml);
+    }
 
     // 5. Avg Sales by Price Range
     var asData = pd.avg_sales_by_price_range;
