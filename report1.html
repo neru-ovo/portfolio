@@ -182,7 +182,7 @@ function initCharts(){
     var pVals = Object.values(priceData);
     window._charts['price-dist'] = echarts.init(document.getElementById('chart-price-dist'));
     window._charts['price-dist'].setOption({
-        color: colors,
+        color: ['#6C63FF'],
         tooltip:{
     trigger:'item',
     backgroundColor:'rgba(26,26,46,0.95)',
@@ -221,7 +221,7 @@ function initCharts(){
     var t10vals = top10.map(function(x){return Math.round(x.Sales_Estimated)}).reverse();
     window._charts['top10-sales'] = echarts.init(document.getElementById('chart-top10-sales'));
     window._charts['top10-sales'].setOption({
-        color: colors,
+        color: ['#43E97B'],
         tooltip:{
     trigger:'item',
     backgroundColor:'rgba(26,26,46,0.95)',
@@ -249,7 +249,7 @@ function initCharts(){
     
     window._charts['scatter'] = echarts.init(document.getElementById('chart-scatter'));
     window._charts['scatter'].setOption({
-        color:['#6C63FF'],
+        color:['#FA709A'],
         title: { 
             text: '价格≤$500产品分布 (共' + mainData.length + '个)', 
             left: 'center', 
@@ -321,7 +321,7 @@ function initCharts(){
     var asVals = Object.values(asData);
     window._charts['avg-sales'] = echarts.init(document.getElementById('chart-avg-sales'));
     window._charts['avg-sales'].setOption({
-        color: colors,
+        color: ['#FEE140'],
         tooltip:{
     trigger:'item',
     backgroundColor:'rgba(26,26,46,0.95)',
@@ -342,7 +342,7 @@ function initCharts(){
     var bRatings = brands.map(function(b){return b.avg_rating}).reverse();
     window._charts['brands'] = echarts.init(document.getElementById('chart-brands'));
     window._charts['brands'].setOption({
-        color: colors,
+        color: ['#4facfe'],
         tooltip:{
     trigger:'item',
     backgroundColor:'rgba(26,26,46,0.95)',
