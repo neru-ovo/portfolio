@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>平安证券APP数据分析报告</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #fef3c7 50%, #fce7f3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #2563eb, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+        
+        .stat-card.pingan-1 { border-top: 4px solid #ff5722; }
+        .stat-card.pingan-2 { border-top: 4px solid #f59e0b; }
+        .stat-card.pingan-3 { border-top: 4px solid #8b5cf6; }
+        .stat-card.pingan-4 { border-top: 4px solid #10b981; }
+        
+        .stat-card.pingan-1 .value { color: #ff5722; }
+        .stat-card.pingan-2 .value { color: #f59e0b; }
+        .stat-card.pingan-3 .value { color: #8b5cf6; }
+        .stat-card.pingan-4 .value { color: #10b981; }
+        
+        .data-table-section {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+            overflow-x: auto;
+        }
+        
+        .data-table-section h3 {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .data-table th {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .data-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        .data-table .highlight {
+            background: rgba(255, 87, 34, 0.08);
+            font-weight: 600;
+        }
+        
+        .data-table .highlight td {
+            color: #ff5722;
+        }
+        
+        .chart-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .chart-card {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .chart-card h3 {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 350px;
+        }
+        
+        .chart-conclusion {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            border-left: 4px solid #2563eb;
+        }
+        
+        .feature-analysis {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .word-cloud-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .word-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 12px;
+            min-height: 180px;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .word-cloud span {
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .word-cloud.positive span {
+            background: rgba(16, 185, 129, 0.15);
+            color: #059669;
+        }
+        
+        .word-cloud.negative span {
+            background: rgba(239, 68, 68, 0.15);
+            color: #dc2626;
+        }
+        
+        .word-cloud span:hover {
+            transform: scale(1.15);
+            cursor: default;
+        }
+        
+        .app-comparison-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .app-comparison-card {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .app-comparison-card h3 {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .app-images {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .app-images img {
+            max-width: 45%;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e2e8f0;
+        }
+        
+        .app-comparison-card.pingan .app-images img {
+            border-color: #ff5722;
+        }
+        
+        .app-comparison-card.citic .app-images img {
+            border-color: #3b82f6;
+        }
+        
+        .app-highlight {
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .app-highlight.positive {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            color: #059669;
+        }
+        
+        .app-highlight.negative {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            color: #dc2626;
+        }
+        
+        .insights-section {
+            background: var(--bg-card);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+        }
+        
+        .insights-section h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .insight-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 25px;
+            background: var(--bg-light);
+            border-radius: 12px;
+        }
+        
+        .insight-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .insight-item .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .insight-item.strength .icon { background: rgba(37, 99, 235, 0.2); color: #2563eb; }
+        .insight-item.weakness .icon { background: rgba(245, 158, 11, 0.2); color: #d97706; }
+        .insight-item.opportunity .icon { background: rgba(16, 185, 129, 0.2); color: #059669; }
+        
+        .insight-item h4 {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .insight-item p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .chart-section, .feature-analysis, .word-cloud-section, .app-comparison-section {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .chart-container {
+                height: 280px;
+            }
+            
+            .app-images img {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>平安证券APP数据分析报告</h1>
+            <p>基于vivo应用商店数据</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card pingan-1">
+                <div class="value">4.7</div>
+                <div class="label">APP评分</div>
+            </div>
+            <div class="stat-card pingan-2">
+                <div class="value">3178万</div>
+                <div class="label">APP下载量</div>
+            </div>
+            <div class="stat-card pingan-3">
+                <div class="value">5062</div>
+                <div class="label">APP评论数</div>
+            </div>
+            <div class="stat-card pingan-4">
+                <div class="value">54%</div>
+                <div class="label">APP好评率</div>
+            </div>
+        </div>
+
+        <div class="data-table-section">
+            <h3>📋 数据概览</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>证券公司</th>
+                        <th>评分</th>
+                        <th>下载量（万次）</th>
+                        <th>评论数</th>
+                        <th>更新时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>国信证券</td><td>4.8</td><td>3142</td><td>10000</td><td>2026-06-23</td></tr>
+                    <tr class="highlight"><td>平安证券</td><td>4.7</td><td>3178</td><td>5062</td><td>2026-06-16</td></tr>
+                    <tr><td>东方财富证券</td><td>4.7</td><td>4265</td><td>1327</td><td>2026-06-26</td></tr>
+                    <tr><td>国泰海通证券</td><td>4.7</td><td>2898</td><td>212</td><td>2026-06-28</td></tr>
+                    <tr><td>中信证券</td><td>4.6</td><td>3247</td><td>1110</td><td>2026-06-26</td></tr>
+                    <tr><td>中国银行证券</td><td>4.6</td><td>2135</td><td>990</td><td>2026-06-14</td></tr>
+                    <tr><td>广发证券</td><td>4.2</td><td>2872</td><td>54</td><td>2026-05-26</td></tr>
+                    <tr><td>光大证券</td><td>3.8</td><td>54</td><td>5</td><td>2026-05-21</td></tr>
+                </tbody>
+            </table>
+            <div class="chart-conclusion">
+                <strong>数据总结：</strong>平安证券以4.7分并列行业第二，下载量3178万位列第三，评论数5062条远超其他竞品（除国信证券外），用户活跃度领先。与主要竞争对手中信证券（4.6分/3247万下载）相比，平安在评分和用户互动方面更具优势。东方财富证券下载量最高（4265万），但评论数仅1327条，用户活跃度较低。
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-card">
+                <h3>📊 8大证券APP评分对比</h3>
+                <div class="chart-container">
+                    <canvas id="scoreChart"></canvas>
+                </div>
+                <div class="chart-conclusion">
+                    <strong>结论：</strong>平安证券以4.7分并列行业第二，仅次于国信证券（4.8分），高于主要竞争对手中信证券（4.6分），整体评分表现优秀。
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>📥 下载量对比（单位：万次）</h3>
+                <div class="chart-container">
+                    <canvas id="downloadChart"></canvas>
+                </div>
+                <div class="chart-conclusion">
+                    <strong>结论：</strong>东方财富证券以4265万下载量领跑市场，平安证券以3178万位列第三，与中信证券（3247万）差距极小，市场份额竞争激烈。
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-card">
+                <h3>💬 评论数量对比</h3>
+                <div class="chart-container">
+                    <canvas id="commentChart"></canvas>
+                </div>
+                <div class="chart-conclusion">
+                    <strong>结论：</strong>平安证券评论数达5062条，是中信证券（1110条）的4.5倍，说明平安用户活跃度更高，反馈意愿更强，蕴含丰富的用户洞察价值。
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>⚖️ 平安 vs 中信：好评与差评数量对比</h3>
+                <div class="chart-container">
+                    <canvas id="sentimentChart"></canvas>
+                </div>
+                <div class="chart-conclusion">
+                    <strong>结论：</strong>中信证券2026年好评数（32条）高于平安证券（31条），而平安证券的好评数据涵盖25-26年所有数据，说明中信近期好评增长较快。注：平安数据为25-26年全部数据，中信好评仅为26年数据，差评为25-26年全部数据，足以见得中信近期好评较多。
+                </div>
+            </div>
+        </div>
+
+        <div class="app-comparison-section">
+            <div class="app-comparison-card pingan">
+                <h3>📱 平安证券APP界面展示</h3>
+                <div class="app-images">
+                    <img src="images/平安证券1.jpg" alt="平安证券界面1">
+                    <img src="images/平安证券2.jpg" alt="平安证券界面2">
+                </div>
+                <div class="app-highlight positive">
+                    <strong>✨ 界面优势：</strong>平安证券APP采用现代化设计风格，UI界面简洁美观，色彩搭配舒适。新手指引位置明显，用户无需登录即可预览大部分功能，大大降低了使用门槛，提升了初次使用体验。界面布局清晰，功能入口一目了然，方便用户快速上手。
+                </div>
+            </div>
+            <div class="app-comparison-card citic">
+                <h3>📱 中信证券APP界面展示</h3>
+                <div class="app-images">
+                    <img src="images/中信证券.jpg" alt="中信证券界面">
+                </div>
+                <div class="app-highlight negative">
+                    <strong>⚠️ 界面短板：</strong>中信证券APP存在明显的使用门槛，大量功能需要登录后才能预览，甚至部分基础功能也需要注册开户才能使用。这种设计限制了用户的初次体验，可能导致潜在用户流失。相比之下，平安证券的开放预览模式更符合用户的使用习惯和期望。
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-analysis">
+            <div class="chart-card">
+                <h3>✅ 平安证券好评特征分布</h3>
+                <div class="chart-container">
+                    <canvas id="pinganPosFeatureChart"></canvas>
+                </div>
+                <div class="chart-conclusion">
+                    <strong>结论：</strong>平安证券好评主要集中在"功能"（7次）和"理财"（4次）方面，说明用户认可其工具丰富性和理财服务能力。"开户"（3次）和"界面"（3次）也是用户认可的亮点。
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>❌ 平安证券差评特征分布</h3>
+                <div class="chart-container">
+                    <canvas id="pinganNegFeatureChart"></canvas>
+                </div>
+                <div class="chart-conclusion">
+                    <strong>结论：</strong>平安证券差评主要集中在"速度"（4次）和"佣金"（3次）方面，卡顿问题和佣金争议是用户最主要的不满点，需要优先解决。
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-analysis">
+            <div class="chart-card">
+                <h3>✅ 中信证券好评特征分布</h3>
+                <div class="chart-container">
+                    <canvas id="citicPosFeatureChart"></canvas>
+                </div>
+                <div class="chart-conclusion">
+                    <strong>结论：</strong>中信证券好评主要集中在"理财"（5次）和"交易"（4次）方面，说明其在理财功能和交易体验上表现出色，值得平安借鉴。
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>❌ 中信证券差评特征分布</h3>
+                <div class="chart-container">
+                    <canvas id="citicNegFeatureChart"></canvas>
+                </div>
+                <div class="chart-conclusion">
+                    <strong>结论：</strong>中信证券差评相对分散，主要涉及"交易"（2次）和"客服"（2次）方面，整体差评特征不如平安集中，问题类型更分散。
+                </div>
+            </div>
+        </div>
+
+        <div class="word-cloud-section">
+            <div class="chart-card">
+                <h3>🌟 平安证券好评词云</h3>
+                <div class="word-cloud positive" id="pinganPosWords"></div>
+                <div class="chart-conclusion">
+                    <strong>结论：</strong>平安证券好评关键词包括"界面简洁"、"操作流畅"、"开户高效"、"工具实用"等，反映出用户对其产品体验和功能实用性的认可。
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>🌟 中信证券好评词云</h3>
+                <div class="word-cloud positive" id="citicPosWords"></div>
+                <div class="chart-conclusion">
+                    <strong>结论：</strong>中信证券好评关键词包括"理财便捷"、"研报深度"、"行情刷新快"等，反映出用户对其专业研究能力和交易效率的认可。
+                </div>
+            </div>
+        </div>
+
+        <div class="word-cloud-section">
+            <div class="chart-card">
+                <h3>💣 平安证券差评词云</h3>
+                <div class="word-cloud negative" id="pinganNegWords"></div>
+                <div class="chart-conclusion">
+                    <strong>结论：</strong>平安证券差评关键词包括"广告推销"、"捆绑内容"、"卡顿"、"佣金高"等，反映出用户对商业化过度和技术性能问题的强烈不满。
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>💣 中信证券差评词云</h3>
+                <div class="word-cloud negative" id="citicNegWords"></div>
+                <div class="chart-conclusion">
+                    <strong>结论：</strong>中信证券差评关键词包括"骚扰电话"、"服务器问题"、"诈骗"、"登录问题"等，反映出其在客户服务和技术稳定性方面存在明显短板。
+                </div>
+            </div>
+        </div>
+
+        <div class="insights-section">
+            <h3>📋 总结与策略建议</h3>
+            <div class="insight-item strength">
+                <div class="icon">🚀</div>
+                <div>
+                    <h4>一、核心优势：功能丰富与用户活跃度</h4>
+                    <p>平安证券在功能工具和开户体验上具有显著优势，评分4.7分处于行业第一梯队。评论数5062条是中信的4.5倍，用户活跃度高，反馈意愿强，为产品迭代提供了丰富的数据支撑。建议持续强化工具功能优势，打造差异化竞争力。</p>
+                </div>
+            </div>
+            <div class="insight-item weakness">
+                <div class="icon">⚠️</div>
+                <div>
+                    <h4>二、主要短板：技术性能与商业化策略</h4>
+                    <p>卡顿问题和佣金争议是用户流失的主要原因，广告和捆绑内容严重影响品牌专业形象。中信近期好评增长较快，对平安形成竞争压力。建议优先解决技术性能问题，优化佣金定价策略，减少非金融类广告，维护专业证券APP的品牌形象。</p>
+                </div>
+            </div>
+            <div class="insight-item opportunity">
+                <div class="icon">🎯</div>
+                <div>
+                    <h4>三、增长机会：理财功能与投顾服务升级</h4>
+                    <p>理财功能是用户关注的增长点，中信在这方面表现更优。平安应借鉴中信经验，丰富基金产品种类，优化定投体验。同时，基于用户对客服和投顾服务的认可，进一步打造明星投顾IP，提升用户粘性和付费转化率。</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>数据来源：vivo应用商店 | 分析时间：2026年6月29日 | 作者：关艺贤</p>
+        </footer>
+    </div>
+
+    <script>
+        const companyColors = {
+            '平安证券': '#FF5722',
+            '国信证券': '#87CEEB',
+            '中信证券': '#DAA520',
+            '东方财富证券': '#98FB98',
+            '国泰海通证券': '#FFB6C1',
+            '中国银行证券': '#DDA0DD',
+            '广发证券': '#FFFACD',
+            '光大证券': '#9370DB'
+        };
+        
+        function getChartColors(dataArray) {
+            return dataArray.map(d => companyColors[d.company] || '#D3D3D3');
+        }
+        
+        const scoreData = [
+            { company: '国信证券', score: 4.8 },
+            { company: '平安证券', score: 4.7 },
+            { company: '东方财富证券', score: 4.7 },
+            { company: '国泰海通证券', score: 4.7 },
+            { company: '中信证券', score: 4.6 },
+            { company: '中国银行证券', score: 4.6 },
+            { company: '广发证券', score: 4.2 },
+            { company: '光大证券', score: 3.8 }
+        ].sort((a, b) => b.score - a.score);
+
+        const downloadData = [
+            { company: '东方财富证券', downloads: 4265 },
+            { company: '中信证券', downloads: 3247 },
+            { company: '平安证券', downloads: 3178 },
+            { company: '国信证券', downloads: 3142 },
+            { company: '国泰海通证券', downloads: 2898 },
+            { company: '广发证券', downloads: 2872 },
+            { company: '中国银行证券', downloads: 2135 },
+            { company: '光大证券', downloads: 54 }
+        ].sort((a, b) => b.downloads - a.downloads);
+
+        const commentData = [
+            { company: '国信证券', comments: 10000 },
+            { company: '平安证券', comments: 5062 },
+            { company: '东方财富证券', comments: 1327 },
+            { company: '中信证券', comments: 1110 },
+            { company: '中国银行证券', comments: 990 },
+            { company: '国泰海通证券', comments: 212 },
+            { company: '广发证券', comments: 54 },
+            { company: '光大证券', comments: 5 }
+        ].sort((a, b) => b.comments - a.comments);
+
+        const pinganPosFeatures = { '开户': 3, '界面': 3, '功能': 7, '客服': 2, '佣金': 2, '速度': 1, '广告': 0, '行情': 1, '理财': 4, '交易': 3 };
+        const pinganNegFeatures = { '开户': 1, '界面': 1, '功能': 2, '客服': 2, '佣金': 3, '速度': 4, '广告': 2, '行情': 1, '理财': 0, '交易': 1 };
+        const citicPosFeatures = { '开户': 0, '界面': 0, '功能': 2, '客服': 0, '佣金': 0, '速度': 2, '广告': 0, '行情': 3, '理财': 5, '交易': 4 };
+        const citicNegFeatures = { '开户': 1, '界面': 1, '功能': 0, '客服': 2, '佣金': 0, '速度': 0, '广告': 0, '行情': 0, '理财': 0, '交易': 2 };
+
+        const pinganPosWords = ['非常好用', '强大无需多言', '界面很简洁', '操作流畅', '客服态度好', '专业', '不卡顿', '细致', '很好的软件', '手机端开户高效', '审核秒过', '炒股工具', '决策工具', '简单方便', '实用', '精准高效', '资产图表直观', '风险测评准', '理财产品多样', '融资利率低'];
+        const pinganNegWords = ['内容五花八门', '广告推销', '捆绑', '旅游', '寿险', '医疗', '卡顿', '开了lv2后卡上天', '指标筛选功能消失', '不能注销', '密码锁定', '经常性点不动', '新版本不如旧版本', '卖保健品', '服务器卡顿', '功能少', '字体不清晰', '佣金高', '实际扣款不符'];
+        const citicPosWords = ['理财一键买卖', '交易快人一步', '基金种类多', '定投简单', '老股民首选', '靠谱', '研报深度足', '资讯准', '权限开通指引清晰', '涨跌停提示明显', '盯盘省心', '批量加自选', '桌面小组件', '下单前确认', '行情刷新快', 'K线图清晰'];
+        const citicNegWords = ['充钱充不进去', '流氓软件', '自动下载', '骚扰电话', '服务器开小差', '加载不了', '多个手机不能同步', '没有人工客服', '诈骗', '资金无法转到交易账户', '登录进不去', '密码不让改'];
+
+        function createBarChart(ctx, labels, data, title, colors) {
+            return new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: title,
+                        data: data,
+                        backgroundColor: colors,
+                        borderRadius: 8,
+                        barThickness: 35
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: { 
+                            grid: { display: false },
+                            ticks: {
+                                font: function(context) {
+                                    const label = context.tick.label;
+                                    return {
+                                        weight: label.includes('平安') ? 'bold' : 'normal',
+                                        size: 11
+                                    };
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createHorizontalBarChart(ctx, labels, data, color) {
+            return new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '特征提及次数',
+                        data: data,
+                        backgroundColor: color,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function createGroupedBarChart(ctx, labels, data1, data2, label1, label2, color1, color2) {
+            return new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: label1, data: data1, backgroundColor: color1, borderRadius: 6 },
+                        { label: label2, data: data2, backgroundColor: color2, borderRadius: 6 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: { 
+                            grid: { display: false },
+                            ticks: {
+                                font: function(context) {
+                                    const label = context.tick.label;
+                                    return {
+                                        weight: label.includes('平安') ? 'bold' : 'normal',
+                                        size: 11
+                                    };
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        createBarChart(
+            document.getElementById('scoreChart').getContext('2d'),
+            scoreData.map(d => d.company),
+            scoreData.map(d => d.score),
+            '评分',
+            getChartColors(scoreData)
+        );
+
+        createBarChart(
+            document.getElementById('downloadChart').getContext('2d'),
+            downloadData.map(d => d.company),
+            downloadData.map(d => d.downloads),
+            '下载量（万次）',
+            getChartColors(downloadData)
+        );
+
+        createBarChart(
+            document.getElementById('commentChart').getContext('2d'),
+            commentData.map(d => d.company),
+            commentData.map(d => d.comments),
+            '评论数',
+            getChartColors(commentData)
+        );
+
+        createGroupedBarChart(
+            document.getElementById('sentimentChart').getContext('2d'),
+            ['平安证券', '中信证券'],
+            [31, 32],
+            [26, 27],
+            '好评数',
+            '差评数',
+            '#FF5722',
+            '#3B82F6'
+        );
+
+        createHorizontalBarChart(
+            document.getElementById('pinganPosFeatureChart').getContext('2d'),
+            Object.keys(pinganPosFeatures),
+            Object.values(pinganPosFeatures),
+            '#10B981'
+        );
+
+        createHorizontalBarChart(
+            document.getElementById('pinganNegFeatureChart').getContext('2d'),
+            Object.keys(pinganNegFeatures),
+            Object.values(pinganNegFeatures),
+            '#EF4444'
+        );
+
+        createHorizontalBarChart(
+            document.getElementById('citicPosFeatureChart').getContext('2d'),
+            Object.keys(citicPosFeatures),
+            Object.values(citicPosFeatures),
+            '#3B82F6'
+        );
+
+        createHorizontalBarChart(
+            document.getElementById('citicNegFeatureChart').getContext('2d'),
+            Object.keys(citicNegFeatures),
+            Object.values(citicNegFeatures),
+            '#F59E0B'
+        );
+
+        function renderWordCloud(containerId, words) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            words.forEach(word => {
+                const span = document.createElement('span');
+                span.textContent = word;
+                span.style.fontSize = `${14 + Math.random() * 8}px`;
+                span.style.opacity = 0.75 + Math.random() * 0.25;
+                span.style.fontWeight = Math.random() > 0.5 ? '600' : '400';
+                container.appendChild(span);
+            });
+        }
+
+        renderWordCloud('pinganPosWords', pinganPosWords);
+        renderWordCloud('pinganNegWords', pinganNegWords);
+        renderWordCloud('citicPosWords', citicPosWords);
+        renderWordCloud('citicNegWords', citicNegWords);
+    </script>
+</body>
+</html>
